@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Learn how I built and deployed a searchable Pokémon Explorer with React 19, Redux Toolkit, RTK Query, Vite and PokéAPI—with architecture, code and lessons." />
+  <meta name="keywords" content="React 19, Redux Toolkit, RTK Query, Pokémon API, PokéAPI, Vite, frontend development, React project, Bhabesh Saha" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="How I Built a Pokémon Explorer with React 19 and RTK Query" />
+  <meta property="og:description" content="A practical development case study covering API architecture, caching, search, error handling and free deployment." />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="How I Built a Pokémon Explorer with React 19 and RTK Query" />
+  <meta name="twitter:description" content="Architecture, code, caching, search and deployment—explained step by step." />
+  <meta name="author" content="Bhabesh Saha" />
+  <title>Building a Pokémon Explorer with RTK Query | Bhabesh Saha</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23ffcb05' stroke='%231e293b' stroke-width='5'/%3E%3Cpath d='M4 32h56' stroke='%231e293b' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='9' fill='white' stroke='%231e293b' stroke-width='5'/%3E%3C/svg%3E" />
+  <style>
+    :root{--ink:#101827;--muted:#526078;--paper:#f7f9fc;--card:#fff;--line:#dce3ec;--yellow:#ffcb05;--blue:#2563eb;--navy:#102a56;--code:#0d1729}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.72;font-size:17px}
+    .top{background:var(--navy);color:#fff;border-bottom:5px solid var(--yellow)}.nav{max-width:1120px;margin:auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:850;letter-spacing:-.02em}.nav a{color:#dbeafe;text-decoration:none;font-size:.92rem}.nav a:hover{color:#fff}
+    .hero{max-width:1120px;margin:auto;padding:72px 24px 64px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,.6fr);gap:56px;align-items:center}.eyebrow{color:var(--yellow);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.76rem}.hero h1{font-size:clamp(2.5rem,6vw,5.1rem);line-height:.98;letter-spacing:-.055em;margin:14px 0 24px;max-width:820px}.dek{font-size:1.18rem;color:#d7e3f7;max-width:720px}.byline{display:flex;gap:12px;align-items:center;margin-top:30px;color:#c8d5e9;font-size:.9rem}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--yellow);color:var(--navy);font-weight:900}.statbox{background:#17376c;border:1px solid #31558d;border-radius:20px;padding:26px}.statbox p{margin:0 0 16px;color:#bfd2ef;font-size:.83rem;text-transform:uppercase;letter-spacing:.08em}.stack{display:flex;flex-wrap:wrap;gap:9px}.chip{background:#0f2852;border:1px solid #496b9f;border-radius:999px;padding:7px 11px;font-size:.82rem;color:#eef5ff}
+    .layout{max-width:1120px;margin:0 auto;padding:56px 24px 80px;display:grid;grid-template-columns:230px minmax(0,720px);gap:64px;justify-content:center}.toc{position:sticky;top:26px;align-self:start}.toc strong{font-size:.82rem;text-transform:uppercase;letter-spacing:.09em}.toc a{display:block;color:var(--muted);text-decoration:none;padding:6px 0;font-size:.9rem;border-left:2px solid var(--line);padding-left:14px}.toc a:hover{border-color:var(--blue);color:var(--blue)}article h2{font-size:2rem;line-height:1.16;letter-spacing:-.035em;margin:64px 0 16px}article h2:first-child{margin-top:0}article h3{font-size:1.25rem;margin:34px 0 10px}article p{color:#344158;margin:0 0 20px}article ul{color:#344158;padding-left:22px}.lead{font-size:1.18rem;color:#22304a}.callout{border-left:5px solid var(--yellow);background:#fff8cf;padding:20px 22px;margin:28px 0;border-radius:0 12px 12px 0;color:#29344a}.diagram{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:28px 0}.step{background:var(--card);border:1px solid var(--line);padding:20px;border-radius:14px;box-shadow:0 8px 24px rgba(19,38,76,.05)}.step b{display:block;color:var(--blue);margin-bottom:6px}.step small{color:var(--muted)}pre{background:var(--code);color:#dbeafe;padding:22px;border-radius:14px;overflow:auto;font-size:.84rem;line-height:1.6;border:1px solid #253653}code{font-family:"SFMono-Regular",Consolas,monospace}.inline{background:#eaf0f8;padding:.15em .35em;border-radius:5px;font-size:.9em}.result{background:linear-gradient(135deg,#eff6ff,#fffce7);border:1px solid #cbd9ee;border-radius:18px;padding:28px;margin-top:58px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}.button{display:inline-block;text-decoration:none;padding:11px 16px;border-radius:10px;font-weight:750;font-size:.9rem;background:var(--blue);color:#fff}.button.secondary{background:#fff;color:var(--navy);border:1px solid #b9c7d9}.footer{border-top:1px solid var(--line);padding:30px 24px;text-align:center;color:var(--muted);font-size:.88rem;background:#fff}
+    @media(max-width:800px){.hero{grid-template-columns:1fr;gap:28px;padding-top:50px}.layout{grid-template-columns:1fr}.toc{position:static;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}.diagram{grid-template-columns:1fr}.hero h1{font-size:3.2rem}}@media(max-width:480px){body{font-size:16px}.hero h1{font-size:2.65rem}.nav span{display:none}.layout{padding-top:36px}article h2{font-size:1.7rem}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <nav class="nav"><div class="brand">Bhabesh Saha <span>· Frontend Engineering</span></div><a href="https://pokemon-rtk-query-bhabesh.onrender.com/" target="_blank" rel="noreferrer">Open live project ↗</a></nav>
+    <div class="hero">
+      <div><div class="eyebrow">Development case study · 8 min read</div><h1>How I Built a Pokémon Explorer with React 19 and RTK Query</h1><p class="dek">How I turned a public API into a fast, searchable interface—with clean server-state management, practical caching and a free production deployment.</p><div class="byline"><div class="avatar">BS</div><div><b>Bhabesh Saha</b><br/>Frontend Developer · September 2026</div></div></div>
+      <aside class="statbox"><p>Technology stack</p><div class="stack"><span class="chip">React 19</span><span class="chip">Redux Toolkit</span><span class="chip">RTK Query</span><span class="chip">Vite</span><span class="chip">PokéAPI</span><span class="chip">Render</span></div></aside>
+    </div>
+  </header>
+  <main class="layout">
+    <aside class="toc"><strong>In this article</strong><a href="#goal">Project goal</a><a href="#architecture">Architecture</a><a href="#api">API layer</a><a href="#ui">UI and search</a><a href="#states">Application states</a><a href="#performance">Performance</a><a href="#deployment">Deployment</a><a href="#learnings">Key learnings</a></aside>
+    <article>
+      <h2 id="goal">The project goal</h2><p class="lead">The objective was not simply to display Pokémon cards. I wanted to demonstrate a maintainable way to fetch, cache and present remote data in a modern React application.</p><p>The application retrieves a Pokémon list from PokéAPI, requests the detailed record for each item, and then renders a searchable catalogue. Users can search by Pokémon name or Pokédex number and immediately see matching results.</p><div class="callout"><b>Core engineering question:</b> how can the UI remain simple while request status, cached data and API errors are handled consistently?</div>
+      <h2 id="architecture">Architecture and data flow</h2><p>I separated the application into three responsibilities: the RTK Query API service owns remote data, the Redux store integrates that service, and React components focus on presentation and interaction.</p><div class="diagram"><div class="step"><b>1 · Request</b><small>The component calls the generated query hook.</small></div><div class="step"><b>2 · Cache</b><small>RTK Query fetches data and stores the result.</small></div><div class="step"><b>3 · Render</b><small>React responds to loading, error and success states.</small></div></div><p>This structure avoids scattering fetch logic and duplicated request state across components. It also gives the application a single, predictable data pipeline.</p>
+      <h2 id="api">Creating the RTK Query API layer</h2><p>The API service uses <code class="inline">createApi</code> and <code class="inline">fetchBaseQuery</code>. A custom <code class="inline">queryFn</code> first loads the list and then uses <code class="inline">Promise.all</code> to resolve the detailed endpoints.</p><pre><code>export const pokemonApi = createApi({
+  reducerPath: "pokemonApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://pokeapi.co/api/v2/"
+  }),
+  endpoints: (builder) => ({
+    getPokemon: builder.query({
+      async queryFn(_, api, options, baseQuery) {
+        const list = await baseQuery("pokemon?limit=124");
+        if (list.error) return { error: list.error };
+
+        const details = await Promise.all(
+          list.data.results.map(({ name }) =>
+            baseQuery(`pokemon/${name}`)
+          )
+        );
+
+        const failed = details.find(item => item.error);
+        if (failed) return { error: failed.error };
+        return { data: details.map(item => item.data) };
+      }
+    })
+  })
+});</code></pre><p>RTK Query generates the React hook automatically. The component receives <code class="inline">data</code>, <code class="inline">isLoading</code> and <code class="inline">error</code> without maintaining separate request reducers or action creators.</p>
+      <h2 id="ui">Building the catalogue and search</h2><p>The interface is component-driven: a list component coordinates data and filtering, while each card displays the individual Pokémon information. Search is performed on the already-fetched client data, so the results update immediately without an additional request.</p><ul><li>Controlled input keeps the search term synchronized with React state.</li><li>Normalization makes name matching case-insensitive.</li><li>Number matching lets users search by Pokédex ID.</li><li>Reusable cards keep presentation logic isolated from data orchestration.</li></ul>
+      <h2 id="states">Designing for loading, failure and success</h2><p>Network-backed interfaces are never only their successful result. The UI explicitly accounts for loading and request failures before attempting to render the grid. This prevents undefined-data errors and gives users clear feedback while PokéAPI responds.</p><p>The API layer also checks both the initial list request and every detailed request. If one of them fails, it returns an RTK Query-compatible error instead of partially pretending the operation succeeded.</p>
+      <h2 id="performance">Performance considerations</h2><p>The current implementation intentionally loads a bounded set of 124 Pokémon. Concurrent detail requests reduce total waiting time, and RTK Query prevents the same mounted query from being fetched repeatedly without reason.</p><p>For a much larger production catalogue, I would evolve this design with pagination or lazy loading, controlled concurrency for detail requests, and cache lifetime settings matched to how frequently the source data changes.</p>
+      <h2 id="deployment">From local development to deployment</h2><p>Vite provides the development and production build pipeline. The production command generates optimized static assets in the <code class="inline">dist</code> directory. Those assets are deployed as a separate free static site on Render.</p><p>The deployment is isolated from my other applications, connected only to this repository, and configured to rebuild automatically when changes reach the main branch. Because the browser communicates directly with the public PokéAPI, this project does not require a paid application server or database.</p>
+      <h2 id="learnings">What this project reinforced</h2><ul><li>Server state deserves a dedicated abstraction rather than ad hoc fetching in components.</li><li>Generated hooks can reduce boilerplate without hiding important request states.</li><li>Clear component boundaries make UI features such as filtering easier to extend.</li><li>Error handling should cover every request in a multi-request workflow.</li><li>A static React application can still demonstrate meaningful architecture and production delivery.</li></ul>
+      <section class="result"><h3>Explore the finished project</h3><p>Try the searchable Pokémon catalogue, review the implementation, or share this case study with another React developer.</p><div class="actions"><a class="button" href="https://pokemon-rtk-query-bhabesh.onrender.com/" target="_blank" rel="noreferrer">View live application</a><a class="button secondary" href="https://github.com/bhabeshHenasaha227/pokemon-by-RTK-query" target="_blank" rel="noreferrer">View source code</a><a class="button secondary share-linkedin" href="#">Share on LinkedIn</a><a class="button secondary share-whatsapp" href="#">Share on WhatsApp</a><a class="button secondary share-x" href="#">Share on X</a></div></section>
+    </article>
+  </main>
+  <footer class="footer">Written and developed by Bhabesh Saha · React 19 · Redux Toolkit · RTK Query</footer>
+  <script>
+    const page = encodeURIComponent(window.location.href);
+    const message = encodeURIComponent("How I built a Pokémon Explorer with React 19 and RTK Query — architecture, caching, search and free deployment.");
+    document.querySelector('.share-linkedin').href = `https://www.linkedin.com/sharing/share-offsite/?url=${page}`;
+    document.querySelector('.share-whatsapp').href = `https://wa.me/?text=${message}%20${page}`;
+    document.querySelector('.share-x').href = `https://twitter.com/intent/tweet?text=${message}&url=${page}`;
+    document.querySelectorAll('[class*="share-"]').forEach(link => { link.target='_blank'; link.rel='noreferrer'; });
+  </script>
+</body>
+</html>
